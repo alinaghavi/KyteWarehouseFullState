@@ -1,39 +1,72 @@
 import React, {Component} from 'react';
- import { connect } from 'react-redux';
-// import { employeeUpdate, employeeCreate } from '../actions';
-import {Card, CardSection, Button} from './common';
-// import EmployeeForm from './EmployeeForm';
+import {Text} from 'react-native';
+import {connect} from 'react-redux';
+import {ShipmentNumberChanged, getShipmentDetails} from '../actions';
+import {Card, Spinner, CardSection, Button, Input} from './common';
 
 class NewShipment extends Component {
-    // onButtonPress() {
-    //   const { name, phone, shift } = this.props;
-    //
-    //   this.props.employeeCreate({ name, phone, shift: shift || 'Monday' });
-    // }
+    onButtonPress() {
+        const { shipmentNumber } = this.props;
+        this.props.getShipmentDetails({ shipmentNumber });
+    }
+
+    renderButton() {
+        if (this.props.loading) {
+            return <Spinner size="large"/>;
+        }
+
+        return (
+            <Button onPress={this.onButtonPress.bind(this)}>
+                Process
+            </Button>
+        );
+    }
+
+
+    onShipmentNumberChange(text) {
+        this.props.ShipmentNumberChanged(text);
+    }
 
     render() {
         return (
             <Card>
-                {/*<EmployeeForm {...this.props} />*/}
                 <CardSection>
-                    <Button>
-                        {/*<Button onPress={this.onButtonPress.bind(this)}>*/}
-                        Create
-                    </Button>
+                    <Input
+                        label="Shipment Number"
+                        placeholder=""
+                        onChangeText={this.onShipmentNumberChange.bind(this)}
+                        value={this.props.shipmentNumber}
+                    />
                 </CardSection>
+
+                <CardSection>
+                    {this.renderButton()}
+                </CardSection>
+
+                <Text style={styles.errorTextStyle}>
+                    {this.props.error}
+                </Text>
+
             </Card>
         );
     }
 }
 
-// const mapStateToProps = (state) => {
-//   const { name, phone, shift } = state.employeeForm;
-//
-//   return { name, phone, shift };
-// };
+const styles = {
+    errorTextStyle: {
+        fontSize: 20,
+        alignSelf: 'center',
+        color: 'red'
+    }
+};
 
-// export default connect(mapStateToProps, {
-//   employeeUpdate, employeeCreate
-// })(EmployeeCreate);
+const mapStateToProps = ({newShipment}) => {
+    const {shipmentNumber, error, loading} = newShipment;
 
-export default NewShipment;
+    return {shipmentNumber, error, loading};
+};
+
+export default connect(mapStateToProps, {
+    ShipmentNumberChanged, getShipmentDetails
+})(NewShipment);
+
