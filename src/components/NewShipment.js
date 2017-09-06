@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import {Text} from 'react-native';
 import {connect} from 'react-redux';
 import {ShipmentNumberChanged, getShipmentDetails} from '../actions';
-import {Card, Spinner, CardSection, Button, Input} from './common';
+import {Card, Spinner, CardSection, Button, Input, InpuWithoutLabel} from './common';
 
 class NewShipment extends Component {
     onButtonPress() {
-        const { shipmentNumber } = this.props;
-        this.props.getShipmentDetails({ shipmentNumber });
+        const { shipmentNumber, apiKey } = this.props;
+        this.props.getShipmentDetails({ shipmentNumber, apiKey });
     }
 
     renderButton() {
@@ -31,11 +31,11 @@ class NewShipment extends Component {
         return (
             <Card>
                 <CardSection>
-                    <Input
-                        label="Shipment Number"
-                        placeholder=""
+                    <InpuWithoutLabel
+                        placeholder="Shipment Number"
                         onChangeText={this.onShipmentNumberChange.bind(this)}
                         value={this.props.shipmentNumber}
+                        keyboardType= "numeric"
                     />
                 </CardSection>
 

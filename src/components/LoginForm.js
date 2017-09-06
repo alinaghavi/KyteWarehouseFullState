@@ -36,6 +36,7 @@ class LoginForm extends Component {
                         placeholder="Your API key"
                         onChangeText={this.onApiKeyChange.bind(this)}
                         value={this.props.apiKey}
+                        secureTextEntry= {true}
                     />
                 </CardSection>
 

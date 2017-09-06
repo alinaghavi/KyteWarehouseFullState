@@ -2,14 +2,16 @@ import {
     SHIPMENT_NUMBER_CHANGED,
     GET_SHIPMENT_DETAILS,
     GET_SHIPMENT_DETAILS_FAILED,
-    GET_SHIPMENT_DETAILS_SUCCEED
+    GET_SHIPMENT_DETAILS_SUCCEED,
+    SHIPMENT_WEIGHT_CHANGED
 } from '../actions/types';
 
 const INITIAL_STATE = {
     shipmentNumber:'',
     error: '',
     loading: false,
-    shipmentDetails:{}
+    shipmentDetails:[],
+    shipmentWeight:''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -19,10 +21,11 @@ export default (state = INITIAL_STATE, action) => {
         case GET_SHIPMENT_DETAILS:
             return { ...state, loading: true, error: '' };
         case GET_SHIPMENT_DETAILS_SUCCEED:
-            console.log(action.payload);
             return { ...state, ...INITIAL_STATE, shipmentDetails: action.payload };
         case GET_SHIPMENT_DETAILS_FAILED:
             return { ...state, error: 'Shipment Number Incorrect.', loading: false };
+        case SHIPMENT_WEIGHT_CHANGED:
+            return {...state, shipmentWeight: action.payload};
         default:
             return state;
     }

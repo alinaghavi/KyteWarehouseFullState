@@ -1,9 +1,9 @@
-import { Actions } from 'react-native-router-flux';
+import {Actions} from 'react-native-router-flux';
 import {
     SHIPMENT_NUMBER_CHANGED,
     GET_SHIPMENT_DETAILS,
     GET_SHIPMENT_DETAILS_FAILED,
-    GET_SHIPMENT_DETAILS_SUCCEED
+    GET_SHIPMENT_DETAILS_SUCCEED,
 } from './types';
 
 export const ShipmentNumberChanged = (text) => {
@@ -14,7 +14,7 @@ export const ShipmentNumberChanged = (text) => {
 };
 
 
-export const getShipmentDetails = ({ shipmentNumber }) => {
+export const getShipmentDetails = ({shipmentNumber, apiKey}) => {
     return (dispatch) => {
         dispatch({type: GET_SHIPMENT_DETAILS});
         var url = `https://kyte.ir/api/v1/shipments/${shipmentNumber}`;
@@ -25,18 +25,20 @@ export const getShipmentDetails = ({ shipmentNumber }) => {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
+                    // "X-Api-Key": apiKey,
                     "X-Api-Key": '1gu93pllj7vo8w000w8sw8w8sogk84wsg4co0gcw8g0kg84480',
                 }
-
             }).then((res) => {
-            if(res.status == 200)
-            {
-                getShipmentDetailsSucceed(dispatch, res);
-            }
-            if(res.status != 200)
-            {
-                getShipmentDetailsFailed(dispatch);
-            }
+            res.json().then(
+                (shipment) => {
+                    if (res.status == 200) {
+                        getShipmentDetailsSucceed(dispatch, shipment);
+                    }
+                    if (res.status != 200) {
+                        getShipmentDetailsFailed(dispatch);
+                    }
+                }
+            )
         });
     }
 };
@@ -52,5 +54,6 @@ const getShipmentDetailsSucceed = (dispatch, shipmentDetails) => {
         payload: shipmentDetails
     });
 
-    // Actions.main();
+    Actions.shipmentdetails({shipmentDetails: shipmentDetails, title: `Shipment Number ${shipmentDetails.id}` });
 };
+
