@@ -6,7 +6,7 @@ import {
     GET_SHIPMENT_DETAILS_SUCCEED,
 } from './types';
 
-export const ShipmentNumberChanged = (text) => {
+export const shipmentNumberChanged = (text) => {
     return {
         type: SHIPMENT_NUMBER_CHANGED,
         payload: text
@@ -32,7 +32,7 @@ export const getShipmentDetails = ({shipmentNumber, apiKey}) => {
             res.json().then(
                 (shipment) => {
                     if (res.status == 200) {
-                        getShipmentDetailsSucceed(dispatch, shipment);
+                        getShipmentDetailsSucceed(dispatch, shipment, apiKey);
                     }
                     if (res.status != 200) {
                         getShipmentDetailsFailed(dispatch);
@@ -48,12 +48,12 @@ const getShipmentDetailsFailed = (dispatch) => {
     dispatch({type: GET_SHIPMENT_DETAILS_FAILED});
 };
 
-const getShipmentDetailsSucceed = (dispatch, shipmentDetails) => {
+const getShipmentDetailsSucceed = (dispatch, shipmentDetails, apiKey) => {
     dispatch({
         type: GET_SHIPMENT_DETAILS_SUCCEED,
         payload: shipmentDetails
     });
 
-    Actions.shipmentdetails({shipmentDetails: shipmentDetails, title: `Shipment Number ${shipmentDetails.id}` });
+    Actions.shipmentdetails({shipmentDetails: shipmentDetails, title: `Shipment Number ${shipmentDetails.id}`, apiKey: apiKey });
 };
 

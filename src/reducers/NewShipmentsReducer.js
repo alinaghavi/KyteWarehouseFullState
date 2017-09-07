@@ -24,8 +24,6 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, ...INITIAL_STATE, shipmentDetails: action.payload };
         case GET_SHIPMENT_DETAILS_FAILED:
             return { ...state, error: 'Shipment Number Incorrect.', loading: false };
-        case SHIPMENT_WEIGHT_CHANGED:
-            return {...state, shipmentWeight: action.payload};
         default:
             return state;
     }

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Text} from 'react-native';
 import {connect} from 'react-redux';
-import {ShipmentNumberChanged, getShipmentDetails} from '../actions';
+import {shipmentNumberChanged, getShipmentDetails} from '../actions';
 import {Card, Spinner, CardSection, Button, Input, InpuWithoutLabel} from './common';
 
 class NewShipment extends Component {
@@ -24,7 +24,7 @@ class NewShipment extends Component {
 
 
     onShipmentNumberChange(text) {
-        this.props.ShipmentNumberChanged(text);
+        this.props.shipmentNumberChanged(text);
     }
 
     render() {
@@ -67,6 +67,6 @@ const mapStateToProps = ({newShipment}) => {
 };
 
 export default connect(mapStateToProps, {
-    ShipmentNumberChanged, getShipmentDetails
+    shipmentNumberChanged, getShipmentDetails
 })(NewShipment);
 

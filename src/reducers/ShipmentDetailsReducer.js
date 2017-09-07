@@ -1,12 +1,18 @@
 import {
     SHIPMENT_WEIGHT_CHANGED,
-    SHIPMENT_PACKAGE_SELECTED
+    SHIPMENT_PACKAGE_SELECTED,
+    SHIPMENT_PROCESSED,
+    SHIPMENT_PROCESS_SUCCEED,
+    SHIPMENT_PROCESS_FAILED,
+    INITIALIZE_WEIGHT_AND_PACKAGE_INPUT
 } from '../actions/types';
 
 const INITIAL_STATE = {
-    shipmentWeight:'',
-    shipmentPackageId:'',
-    shipmentPackageName:''
+    shipmentWeight: '',
+    shipmentPackageId: 0,
+    shipmentPackageName: 'بدون کارتون',
+    loading: false,
+    error: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -14,7 +20,21 @@ export default (state = INITIAL_STATE, action) => {
         case SHIPMENT_WEIGHT_CHANGED:
             return {...state, shipmentWeight: action.payload};
         case SHIPMENT_PACKAGE_SELECTED:
-            return {...state, shipmentPackageId: action.payload.packageId, shipmentPackageName: action.payload.packageName};
+            return {
+                ...state,
+                shipmentPackageId: action.payload.packageId,
+                shipmentPackageName: action.payload.packageName
+            };
+        case SHIPMENT_PROCESSED:
+            return {...state, loading: true, error: ''};
+        case SHIPMENT_PROCESS_SUCCEED:
+            return {...state, ...INITIAL_STATE, shipmentId: action.payload};
+        case SHIPMENT_PROCESS_FAILED:
+            return {...state, error: 'Shipment Does Not Processed Successfully.', loading: false};
+        case INITIALIZE_WEIGHT_AND_PACKAGE_INPUT:
+            return {...state, shipmentWeight:'', };
+
+
         default:
             return state;
     }

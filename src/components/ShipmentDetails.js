@@ -4,8 +4,10 @@ import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 import ModalDropdown from "react-native-modal-dropdown";
 import {
-    ShipmentWeightChange,
-    ShipmentPackageSelect
+    shipmentWeightChange,
+    shipmentPackageSelect,
+    shipmentProcess,
+    initializeWeightAndPackageInput
 } from '../actions';
 import {
     Card,
@@ -20,14 +22,35 @@ import {
 var myPackages = ['بدون کارتون', 'G1', 'G2', 'G3', 'G4', 'G5'];
 
 class ShipmentDetails extends Component {
+    componentWillMount() {
+        this.props.initializeWeightAndPackageInput();
+    }
 
     onShipmentWeightChange(text) {
-        this.props.ShipmentWeightChange(text);
+        this.props.shipmentWeightChange(text);
     };
 
     onShipmentPackegeSelect(packageId, packageName) {
-        this.props.ShipmentPackageSelect(packageId, packageName);
+        this.props.shipmentPackageSelect(packageId, packageName);
     };
+
+    onButtonPress() {
+        const {shipmentDetails, shipmentWeight, shipmentPackageId } = this.props;
+        console.log( "specec", shipmentDetails.id, shipmentWeight, shipmentPackageId);
+        this.props.shipmentProcess({shipmentId:shipmentDetails.id, shipmentWeight , shipmentPackageId});
+    }
+
+    renderButton() {
+        if (this.props.loading) {
+            return <Spinner size="large"/>;
+        }
+
+        return (
+            <Button onPress={this.onButtonPress.bind(this)}>
+                Process
+            </Button>
+        );
+    }
 
     renderShipmentDetails() {
         const {state, address, service, contentClaim} = this.props.shipmentDetails;
@@ -79,9 +102,9 @@ class ShipmentDetails extends Component {
 
                         <ModalDropdown
                             options={myPackages}
-                            defaultValue={myPackages[0]}
+                            defaultValue={this.props.shipmentPackageName}
                             animated={false}
-                            defaultIndex={1}
+                            defaultIndex={parseInt(this.props.shipmentPackageId)}
                             style={styles.PackageWrapper}
                             textStyle={styles.dropDownText}
                             dropdownTextStyle={styles.dropDownItemText}
@@ -101,6 +124,16 @@ class ShipmentDetails extends Component {
                     <CardSection style={{flexDirection: "column"}}>
                         {this.renderShipmentDetails()}
                     </CardSection>
+
+                    <CardSection>
+                        <Button onPress={this.onButtonPress.bind(this)}>
+                            Process
+                        </Button>
+                    </CardSection>
+
+                    <Text style={styles.errorTextStyle}>
+                        {this.props.error}
+                    </Text>
 
                 </Card>
             </View>
@@ -133,14 +166,19 @@ const styles = {
         textAlign: 'center',
         alignSelf: 'center',
         width: 170,
+    },
+    errorTextStyle: {
+        fontSize: 20,
+        alignSelf: 'center',
+        color: 'red'
     }
 }
 const mapStateToProps = ({shipmentDetails}) => {
-    const {shipmentWeight, shipmentPackageId, shipmentPackageName} = shipmentDetails;
+    const {shipmentWeight, shipmentPackageId, shipmentPackageName, error} = shipmentDetails;
 
-    return {shipmentWeight, shipmentPackageId, shipmentPackageName};
+    return {shipmentWeight, shipmentPackageId, shipmentPackageName, error};
 };
 
 export default connect(mapStateToProps, {
-    ShipmentWeightChange, ShipmentPackageSelect
+    shipmentWeightChange, shipmentPackageSelect, shipmentProcess, initializeWeightAndPackageInput
 })(ShipmentDetails);
