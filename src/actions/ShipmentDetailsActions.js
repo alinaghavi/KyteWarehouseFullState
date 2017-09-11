@@ -5,7 +5,9 @@ import {
     SHIPMENT_PROCESSED,
     SHIPMENT_PROCESS_SUCCEED,
     SHIPMENT_PROCESS_FAILED,
-    INITIALIZE_WEIGHT_AND_PACKAGE_INPUT
+    INITIALIZE_WEIGHT_AND_PACKAGE_INPUT,
+    GET_PACKAGES_LIST_SUCCEED,
+    GET_PACKAGES_LIST_FAILED
 } from './types';
 
 
@@ -15,6 +17,48 @@ export const shipmentWeightChange = (text) => {
         payload: text
     };
 };
+
+
+export const getPackagesList = () => {
+    return (dispatch) => {
+
+        var url = "https://kyte.ir/api/v1/inventories/";
+
+        return fetch(url,
+            {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    // "X-Api-Key": apiKey,
+                    "X-Api-Key": '1gu93pllj7vo8w000w8sw8w8sogk84wsg4co0gcw8g0kg84480',
+                }
+            }).then((res) => {
+            if (res.status == 200) {
+                res.json().then(
+                    (packagesList) => {
+                        getPackagesListSucceed(dispatch, packagesList._embedded.items);
+                    }
+                )
+            }
+            if (res.status != 200) {
+                getPackagesListFailed(dispatch);
+            }
+        });
+    };
+};
+
+const getPackagesListFailed = (dispatch) => {
+    dispatch({type: GET_PACKAGES_LIST_FAILED});
+};
+
+const getPackagesListSucceed = (dispatch, packagesList) => {
+    dispatch({
+        type: GET_PACKAGES_LIST_SUCCEED,
+        payload: packagesList
+    });
+};
+
 
 export const shipmentPackageSelect = (packageId, packageName) => {
     return {
@@ -29,14 +73,13 @@ export const initializeWeightAndPackageInput = () => {
     };
 };
 
-export const shipmentProcess = ({ shipmentId, shipmentWeight , shipmentPackageId}) => {
+export const shipmentProcess = ({shipmentId, shipmentWeight, shipmentPackageId}) => {
 
     return (dispatch) => {
 
         dispatch({type: SHIPMENT_PROCESSED});
 
         var url = `https://kyte.ir/api/v1/shipments/${shipmentId}/process`;
-        console.log("url is", url);
 
         fetch(url,
             {
@@ -50,12 +93,13 @@ export const shipmentProcess = ({ shipmentId, shipmentWeight , shipmentPackageId
                 body: JSON.stringify({
                     // parcelWeight: shipmentWeight,
                     // packagingMaterial: shipmentPackageId,
-                    parcelWeight: shipmentWeight ,
-                    parcelLength: 1,
-                    parcelWidth: 1,
-                    parcelHeight: 1,
-                    packagingMaterial: 'E1',
-                    packagingPrice: 2000,
+                    parcelWeight: shipmentWeight,
+                    // parcelLength: 1,
+                    // parcelWidth: 1,
+                    // parcelHeight: 1,
+                    // packagingMaterial: 'E1',
+                    // packagingPrice: 2000,
+                    inventory: string
                 })
 
             })
@@ -76,11 +120,9 @@ const shipmentProcessFail = (dispatch, res) => {
 };
 
 const shipmentProcessSuccess = (dispatch, shipmentId) => {
-    console.log("Shipment proccessed successfully");
     dispatch({
         type: SHIPMENT_PROCESS_SUCCEED,
         payload: shipmentId
     });
 
-    // Actions.shipmentdetails({shipmentDetails: shipmentDetails, title: `Shipment Number ${shipmentDetails.id}`});
 };

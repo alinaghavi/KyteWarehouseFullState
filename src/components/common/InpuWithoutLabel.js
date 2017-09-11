@@ -15,7 +15,6 @@ const InpuWithoutLabel = ({value, onChangeText, placeholder, secureTextEntry, ke
                 onChangeText={onChangeText}
                 keyboardType={keyboardType}
             />
-            {/*{console.log("Style is",this.props.style)}*/}
         </View>
     );
 };
@@ -28,7 +27,10 @@ const styles = {
         fontSize: 18,
         lineHeight: 23,
         flex: 1,
-        textAlign:'center'
+        textAlign:'center',
+        borderWidth:2,
+        borderColor:'#eee',
+        height:38
     },
     containerStyle: {
         height: 40,

@@ -7,7 +7,8 @@ import {
     shipmentWeightChange,
     shipmentPackageSelect,
     shipmentProcess,
-    initializeWeightAndPackageInput
+    initializeWeightAndPackageInput,
+    getPackagesList
 } from '../actions';
 import {
     Card,
@@ -24,6 +25,7 @@ var myPackages = ['بدون کارتون', 'G1', 'G2', 'G3', 'G4', 'G5'];
 class ShipmentDetails extends Component {
     componentWillMount() {
         this.props.initializeWeightAndPackageInput();
+        this.props.getPackagesList();
     }
 
     onShipmentWeightChange(text) {
@@ -35,9 +37,8 @@ class ShipmentDetails extends Component {
     };
 
     onButtonPress() {
-        const {shipmentDetails, shipmentWeight, shipmentPackageId } = this.props;
-        console.log( "specec", shipmentDetails.id, shipmentWeight, shipmentPackageId);
-        this.props.shipmentProcess({shipmentId:shipmentDetails.id, shipmentWeight , shipmentPackageId});
+        const {shipmentDetails, shipmentWeight, shipmentPackageId, shipmentProcess } = this.props;
+        shipmentProcess({shipmentId:shipmentDetails.id, shipmentWeight , shipmentPackageId});
     }
 
     renderButton() {
@@ -133,6 +134,8 @@ class ShipmentDetails extends Component {
 
                     <Text style={styles.errorTextStyle}>
                         {this.props.error}
+                        {console.log(this.props)}
+
                     </Text>
 
                 </Card>
@@ -174,11 +177,12 @@ const styles = {
     }
 }
 const mapStateToProps = ({shipmentDetails}) => {
-    const {shipmentWeight, shipmentPackageId, shipmentPackageName, error} = shipmentDetails;
 
-    return {shipmentWeight, shipmentPackageId, shipmentPackageName, error};
+    const {shipmentWeight, shipmentPackageId, shipmentPackageName, error, packagesList} = shipmentDetails;
+
+    return {shipmentWeight, shipmentPackageId, shipmentPackageName, error, packagesList};
 };
 
 export default connect(mapStateToProps, {
-    shipmentWeightChange, shipmentPackageSelect, shipmentProcess, initializeWeightAndPackageInput
+    shipmentWeightChange, shipmentPackageSelect, shipmentProcess, initializeWeightAndPackageInput, getPackagesList
 })(ShipmentDetails);

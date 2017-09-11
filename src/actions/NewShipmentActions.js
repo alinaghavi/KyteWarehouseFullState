@@ -29,16 +29,17 @@ export const getShipmentDetails = ({shipmentNumber, apiKey}) => {
                     "X-Api-Key": '1gu93pllj7vo8w000w8sw8w8sogk84wsg4co0gcw8g0kg84480',
                 }
             }).then((res) => {
-            res.json().then(
-                (shipment) => {
-                    if (res.status == 200) {
+            if (res.status == 200) {
+                res.json().then(
+                    (shipment) => {
                         getShipmentDetailsSucceed(dispatch, shipment, apiKey);
                     }
-                    if (res.status != 200) {
-                        getShipmentDetailsFailed(dispatch);
-                    }
-                }
-            )
+                )
+            }
+            if (res.status != 200) {
+                getShipmentDetailsFailed(dispatch);
+            }
+
         });
     }
 };
@@ -54,6 +55,10 @@ const getShipmentDetailsSucceed = (dispatch, shipmentDetails, apiKey) => {
         payload: shipmentDetails
     });
 
-    Actions.shipmentdetails({shipmentDetails: shipmentDetails, title: `Shipment Number ${shipmentDetails.id}`, apiKey: apiKey });
+    Actions.shipmentdetails({
+        shipmentDetails: shipmentDetails,
+        title: `Shipment Number ${shipmentDetails.id}`,
+        apiKey: apiKey
+    });
 };
 

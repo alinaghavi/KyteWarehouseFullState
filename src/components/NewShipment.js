@@ -6,8 +6,8 @@ import {Card, Spinner, CardSection, Button, Input, InpuWithoutLabel} from './com
 
 class NewShipment extends Component {
     onButtonPress() {
-        const { shipmentNumber, apiKey } = this.props;
-        this.props.getShipmentDetails({ shipmentNumber, apiKey });
+        const {shipmentNumber, apiKey} = this.props;
+        this.props.getShipmentDetails({shipmentNumber, apiKey});
     }
 
     renderButton() {
@@ -30,12 +30,22 @@ class NewShipment extends Component {
     render() {
         return (
             <Card>
+                <CardSection style={{backgroundColor: '#fff'}}>
+                    <Text style={styles.welcomeText}>
+                        {this.props.userInfo.name}
+                    </Text>
+                    <Text style={styles.welcomeText}>
+                        کاربر حاضر
+                    </Text>
+
+                </CardSection>
+
                 <CardSection>
                     <InpuWithoutLabel
                         placeholder="Shipment Number"
                         onChangeText={this.onShipmentNumberChange.bind(this)}
                         value={this.props.shipmentNumber}
-                        keyboardType= "numeric"
+                        keyboardType="numeric"
                     />
                 </CardSection>
 
@@ -57,6 +67,12 @@ const styles = {
         fontSize: 20,
         alignSelf: 'center',
         color: 'red'
+    },
+    welcomeText: {
+        fontSize: 25,
+        color: 'green',
+        flex: 1,
+        textAlign: 'center'
     }
 };
 

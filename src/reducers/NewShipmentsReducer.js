@@ -3,7 +3,8 @@ import {
     GET_SHIPMENT_DETAILS,
     GET_SHIPMENT_DETAILS_FAILED,
     GET_SHIPMENT_DETAILS_SUCCEED,
-    SHIPMENT_WEIGHT_CHANGED
+    SHIPMENT_WEIGHT_CHANGED,
+
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -11,7 +12,7 @@ const INITIAL_STATE = {
     error: '',
     loading: false,
     shipmentDetails:[],
-    shipmentWeight:''
+    shipmentWeight:'',
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -24,6 +25,7 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, ...INITIAL_STATE, shipmentDetails: action.payload };
         case GET_SHIPMENT_DETAILS_FAILED:
             return { ...state, error: 'Shipment Number Incorrect.', loading: false };
+
         default:
             return state;
     }
