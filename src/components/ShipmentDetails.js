@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import {Text, View} from 'react-native';
-import {Actions} from 'react-native-router-flux';
+// import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 import ModalDropdown from "react-native-modal-dropdown";
 import {
+    getInventoriesList,
     shipmentWeightChange,
-    shipmentPackageSelect,
+    shipmentInventorySelect,
     shipmentProcess,
-    initializeWeightAndPackageInput,
-    getPackagesList
+    initializeWeightAndInventoryInput
 } from '../actions';
 import {
     Card,
@@ -20,26 +20,30 @@ import {
 } from './common';
 
 
-var myPackages = ['بدون کارتون', 'G1', 'G2', 'G3', 'G4', 'G5'];
-
 class ShipmentDetails extends Component {
     componentWillMount() {
-        this.props.initializeWeightAndPackageInput();
-        this.props.getPackagesList();
+        const {initializeWeightAndInventoryInput, getInventoriesList} = this.props;
+        initializeWeightAndInventoryInput();
+        getInventoriesList();
     }
 
     onShipmentWeightChange(text) {
         this.props.shipmentWeightChange(text);
     };
 
-    onShipmentPackegeSelect(packageId, packageName) {
-        this.props.shipmentPackageSelect(packageId, packageName);
+    onShipmentInventorySelect(shipmentInventorySku, shipmentInventoryCode) {
+        this.props.shipmentInventorySelect(shipmentInventorySku, shipmentInventoryCode);
     };
 
     onButtonPress() {
-        const {shipmentDetails, shipmentWeight, shipmentPackageId, shipmentProcess } = this.props;
-        shipmentProcess({shipmentId:shipmentDetails.id, shipmentWeight , shipmentPackageId});
+        const {shipmentDetails, shipmentWeight, shipmentProcess, inventorySku, shipmentInventorySku} = this.props;
+        shipmentProcess({
+            shipmentId: shipmentDetails.id,
+            shipmentWeight,
+            shipmentInventorySku: inventorySku[shipmentInventorySku]
+        });
     }
+
 
     renderButton() {
         if (this.props.loading) {
@@ -102,14 +106,14 @@ class ShipmentDetails extends Component {
                     <CardSection>
 
                         <ModalDropdown
-                            options={myPackages}
-                            defaultValue={this.props.shipmentPackageName}
+                            options={this.props.inventoryCode}
+                            defaultValue={this.props.shipmentInventoryCode}
                             animated={false}
-                            defaultIndex={parseInt(this.props.shipmentPackageId)}
-                            style={styles.PackageWrapper}
+                            defaultIndex={parseInt(this.props.shipmentInventorySku)}
+                            style={styles.InventoryWrapper}
                             textStyle={styles.dropDownText}
                             dropdownTextStyle={styles.dropDownItemText}
-                            onSelect={this.onShipmentPackegeSelect.bind(this)}
+                            onSelect={this.onShipmentInventorySelect.bind(this)}
                         />
 
                         <InpuWithoutLabel
@@ -127,14 +131,11 @@ class ShipmentDetails extends Component {
                     </CardSection>
 
                     <CardSection>
-                        <Button onPress={this.onButtonPress.bind(this)}>
-                            Process
-                        </Button>
+                        {this.renderButton()}
                     </CardSection>
 
                     <Text style={styles.errorTextStyle}>
                         {this.props.error}
-                        {console.log(this.props)}
 
                     </Text>
 
@@ -152,7 +153,7 @@ const styles = {
         height: 50,
         alignSelf: 'center',
     },
-    PackageWrapper: {
+    InventoryWrapper: {
         borderColor: '#e1e1e1',
         borderWidth: 2,
         width: 170,
@@ -178,11 +179,24 @@ const styles = {
 }
 const mapStateToProps = ({shipmentDetails}) => {
 
-    const {shipmentWeight, shipmentPackageId, shipmentPackageName, error, packagesList} = shipmentDetails;
 
-    return {shipmentWeight, shipmentPackageId, shipmentPackageName, error, packagesList};
+    const {shipmentWeight, shipmentInventorySku, shipmentInventoryCode, error, inventoryCode, inventorySku} = shipmentDetails;
+    console.log("SKU", shipmentInventorySku, "CODE", shipmentInventoryCode, "WEIGHT", shipmentWeight);
+
+    return {
+        shipmentWeight,
+        shipmentInventorySku,
+        shipmentInventoryCode,
+        error,
+        inventoryCode,
+        inventorySku
+    };
 };
 
 export default connect(mapStateToProps, {
-    shipmentWeightChange, shipmentPackageSelect, shipmentProcess, initializeWeightAndPackageInput, getPackagesList
+    shipmentWeightChange,
+    shipmentInventorySelect,
+    shipmentProcess,
+    initializeWeightAndInventoryInput,
+    getInventoriesList
 })(ShipmentDetails);

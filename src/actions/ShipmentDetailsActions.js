@@ -1,13 +1,13 @@
 import {Actions} from 'react-native-router-flux';
 import {
     SHIPMENT_WEIGHT_CHANGED,
-    SHIPMENT_PACKAGE_SELECTED,
+    SHIPMENT_INVENTORY_SELECTED,
     SHIPMENT_PROCESSED,
     SHIPMENT_PROCESS_SUCCEED,
     SHIPMENT_PROCESS_FAILED,
-    INITIALIZE_WEIGHT_AND_PACKAGE_INPUT,
-    GET_PACKAGES_LIST_SUCCEED,
-    GET_PACKAGES_LIST_FAILED
+    INITIALIZE_WEIGHT_AND_INVENTORY_INPUT,
+    GET_INVENTORIES_LIST_SUCCEED,
+    GET_INVENTORIES_LIST_FAILED
 } from './types';
 
 
@@ -19,11 +19,9 @@ export const shipmentWeightChange = (text) => {
 };
 
 
-export const getPackagesList = () => {
+export const getInventoriesList = () => {
     return (dispatch) => {
-
-        var url = "https://kyte.ir/api/v1/inventories/";
-
+        var url = "https://kyte.ir/api/v1/inventories/availables";
         return fetch(url,
             {
                 method: 'GET',
@@ -36,45 +34,57 @@ export const getPackagesList = () => {
             }).then((res) => {
             if (res.status == 200) {
                 res.json().then(
-                    (packagesList) => {
-                        getPackagesListSucceed(dispatch, packagesList._embedded.items);
+                    (inventoriesList) => {
+                        getInventoriesListSucceed(dispatch, inventoriesList);
                     }
                 )
             }
             if (res.status != 200) {
-                getPackagesListFailed(dispatch);
+                getInventoriesListFailed(dispatch);
             }
         });
     };
 };
 
-const getPackagesListFailed = (dispatch) => {
-    dispatch({type: GET_PACKAGES_LIST_FAILED});
+const getInventoriesListFailed = (dispatch) => {
+    dispatch({type: GET_INVENTORIES_LIST_FAILED});
 };
 
-const getPackagesListSucceed = (dispatch, packagesList) => {
+const getInventoriesListSucceed = (dispatch, inventoriesList) => {
+    var inventoriesObj = [];
+    inventoriesList.map(function(key) {
+        inventoriesObj.push({
+            SKU: key.sku,
+            CODE: key.material.code
+        })
+    });
+    var inventorySku = [];
+    var inventoryCode = [];
+    inventoriesObj.map(function(key) {
+        inventoryCode.push(key.CODE);
+        inventorySku.push(key.SKU);
+    });
     dispatch({
-        type: GET_PACKAGES_LIST_SUCCEED,
-        payload: packagesList
+        type: GET_INVENTORIES_LIST_SUCCEED,
+        payload: {inventorySku, inventoryCode}
     });
 };
 
 
-export const shipmentPackageSelect = (packageId, packageName) => {
+export const shipmentInventorySelect = (inventorySku, inventoryCode) => {
     return {
-        type: SHIPMENT_PACKAGE_SELECTED,
-        payload: {packageId, packageName}
+        type: SHIPMENT_INVENTORY_SELECTED,
+        payload: {inventorySku, inventoryCode}
     };
 };
 
-export const initializeWeightAndPackageInput = () => {
+export const initializeWeightAndInventoryInput = () => {
     return {
-        type: INITIALIZE_WEIGHT_AND_PACKAGE_INPUT,
+        type: INITIALIZE_WEIGHT_AND_INVENTORY_INPUT,
     };
 };
 
-export const shipmentProcess = ({shipmentId, shipmentWeight, shipmentPackageId}) => {
-
+export const shipmentProcess = ({shipmentId, shipmentWeight, shipmentInventorySku}) => {
     return (dispatch) => {
 
         dispatch({type: SHIPMENT_PROCESSED});
@@ -88,34 +98,27 @@ export const shipmentProcess = ({shipmentId, shipmentWeight, shipmentPackageId})
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     // "X-Api-Key": apiKey,
-                    "X-Api-Key": '53lwot4cco00scggc4c488cs0k8ccos0wowgc0okk84gk84008',
+                    "X-Api-Key": '1gu93pllj7vo8w000w8sw8w8sogk84wsg4co0gcw8g0kg84480',
                 },
                 body: JSON.stringify({
-                    // parcelWeight: shipmentWeight,
-                    // packagingMaterial: shipmentPackageId,
                     parcelWeight: shipmentWeight,
-                    // parcelLength: 1,
-                    // parcelWidth: 1,
-                    // parcelHeight: 1,
-                    // packagingMaterial: 'E1',
-                    // packagingPrice: 2000,
-                    inventory: string
+                    inventory: shipmentInventorySku
                 })
 
             })
             .then((res) => {
-                if (res.status == 200) {
-                    shipmentProcessSuccess(dispatch, shipmentId);
+                if ( 300 >= res.status && res.status >= 200) {
+                    shipmentProcessSuccess(dispatch);
                 }
-                if (res.status != 200) {
-                    shipmentProcessFail(dispatch, res);
+                if (300 < res.status || res.status < 200) {
+                    shipmentProcessFail(dispatch);
                 }
             })
     }
 };
 
 
-const shipmentProcessFail = (dispatch, res) => {
+const shipmentProcessFail = (dispatch) => {
     dispatch({type: SHIPMENT_PROCESS_FAILED});
 };
 
