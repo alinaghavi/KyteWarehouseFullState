@@ -5,6 +5,10 @@ import {
     SHIPMENT_PROCESS_SUCCEED,
     SHIPMENT_PROCESS_FAILED,
     INITIALIZE_WEIGHT_AND_INVENTORY_INPUT,
+    INITIALIZE_WEIGHT_AND_INVENTORY_SUCCEED,
+    INITIALIZE_WEIGHT_AND_INVENTORY_FAILED,
+    PARCEL_HAS_NO_WEIGHT,
+    PARCEL_HAS_WEIGHT,
     GET_INVENTORIES_LIST_SUCCEED,
     GET_INVENTORIES_LIST_FAILED
 } from '../actions/types';
@@ -15,8 +19,9 @@ const INITIAL_STATE = {
     shipmentInventoryCode: 'G1',
     loading: false,
     error: '',
-    inventorySku:[],
-    inventoryCode:[]
+    inventorySku: [],
+    inventoryCode: [],
+    parcelProcessed: false
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -36,7 +41,15 @@ export default (state = INITIAL_STATE, action) => {
         case SHIPMENT_PROCESS_FAILED:
             return {...state, error: 'Shipment Does Not Processed Successfully.', loading: false};
         case INITIALIZE_WEIGHT_AND_INVENTORY_INPUT:
-            return {...state, shipmentWeight: '',error:''};
+            return {...state, shipmentWeight: 100, error: ''};
+        case INITIALIZE_WEIGHT_AND_INVENTORY_SUCCEED:
+            return {...state, };
+        case INITIALIZE_WEIGHT_AND_INVENTORY_FAILED:
+            return {...state, error: 'Something Went wrong Please Try again'};
+        case PARCEL_HAS_WEIGHT:
+            return {...state, error: '', shipmentWeight: action.payload, parcelProcessed:true};
+        case PARCEL_HAS_NO_WEIGHT:
+            return {...state, error: '', shipmentWeight:'', parcelProcessed: false};
         case GET_INVENTORIES_LIST_SUCCEED:
             return {
                 ...state,

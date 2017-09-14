@@ -32,12 +32,12 @@ class NewShipment extends Component {
             <Card>
                 <CardSection style={{backgroundColor: '#fff'}}>
                     <Text style={styles.welcomeText}>
-                        {this.props.userInfo.name}
-                    </Text>
-                    <Text style={styles.welcomeText}>
-                        کاربر حاضر
+                        Currenu User :
                     </Text>
 
+                    <Text style={styles.welcomeText}>
+                        {this.props.userInfo.name}
+                    </Text>
                 </CardSection>
 
                 <CardSection>

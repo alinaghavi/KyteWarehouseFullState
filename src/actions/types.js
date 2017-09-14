@@ -16,4 +16,8 @@ export const SHIPMENT_PROCESSED = 'shipment_processed';
 export const SHIPMENT_PROCESS_SUCCEED = 'shipment_process_succeed';
 export const SHIPMENT_PROCESS_FAILED = 'shipment_process_failed';
 export const INITIALIZE_WEIGHT_AND_INVENTORY_INPUT = 'initialize_weight_and_inventory_input';
+export const INITIALIZE_WEIGHT_AND_INVENTORY_SUCCEED = 'initialize_weight_and_inventory_succeed';
+export const INITIALIZE_WEIGHT_AND_INVENTORY_FAILED = 'initialize_weight_and_inventory_failed';
+export const PARCEL_HAS_WEIGHT = 'parcel_has_weight';
+export const PARCEL_HAS_NO_WEIGHT = 'parcel_has_no_weight';
 

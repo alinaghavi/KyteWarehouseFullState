@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, ScrollView} from 'react-native';
 // import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 import ModalDropdown from "react-native-modal-dropdown";
@@ -22,8 +22,8 @@ import {
 
 class ShipmentDetails extends Component {
     componentWillMount() {
-        const {initializeWeightAndInventoryInput, getInventoriesList} = this.props;
-        initializeWeightAndInventoryInput();
+        const {initializeWeightAndInventoryInput, getInventoriesList, shipmentDetails} = this.props;
+        initializeWeightAndInventoryInput(shipmentDetails.id);
         getInventoriesList();
     }
 
@@ -101,35 +101,39 @@ class ShipmentDetails extends Component {
 
     render() {
         return (
-            <View>
+            <View style={{flex: 1}}>
                 <Card>
-                    <CardSection>
+                    <ScrollView>
+                        <View style={{flex: 1}}>
+                            <CardSection>
 
-                        <ModalDropdown
-                            options={this.props.inventoryCode}
-                            defaultValue={this.props.shipmentInventoryCode}
-                            animated={false}
-                            defaultIndex={parseInt(this.props.shipmentInventorySku)}
-                            style={styles.InventoryWrapper}
-                            textStyle={styles.dropDownText}
-                            dropdownTextStyle={styles.dropDownItemText}
-                            onSelect={this.onShipmentInventorySelect.bind(this)}
-                        />
+                                <ModalDropdown
+                                    options={this.props.inventoryCode}
+                                    defaultValue={this.props.shipmentInventoryCode}
+                                    animated={false}
+                                    defaultIndex={parseInt(this.props.shipmentInventorySku)}
+                                    style={styles.InventoryWrapper}
+                                    textStyle={this.props.parcelProcessed ? [styles.dropDownText, styles.ParcelProcessed] : styles.dropDownText}
+                                    dropdownTextStyle={styles.dropDownItemText}
+                                    onSelect={this.onShipmentInventorySelect.bind(this)}
+                                />
 
-                        <InpuWithoutLabel
-                            style={styles.WeightWrapper}
-                            placeholder="Weight"
-                            keyboardType="numeric"
-                            onChangeText={this.onShipmentWeightChange.bind(this)}
-                            value={this.props.shipmentWeight}
-                        />
+                                <InpuWithoutLabel
+                                    style={styles.WeightWrapper}
+                                    textStyle={this.props.parcelProcessed ? styles.ParcelProcessed : "" }
+                                    placeholder="Weight"
+                                    keyboardType="numeric"
+                                    onChangeText={this.onShipmentWeightChange.bind(this)}
+                                    value={this.props.shipmentWeight.toString()}
+                                />
 
-                    </CardSection>
+                            </CardSection>
 
-                    <CardSection style={{flexDirection: "column"}}>
-                        {this.renderShipmentDetails()}
-                    </CardSection>
-
+                            <CardSection style={{flexDirection: "column"}}>
+                                {this.renderShipmentDetails()}
+                            </CardSection>
+                        </View>
+                    </ScrollView>
                     <CardSection>
                         {this.renderButton()}
                     </CardSection>
@@ -175,13 +179,17 @@ const styles = {
         fontSize: 20,
         alignSelf: 'center',
         color: 'red'
+    },
+    ParcelProcessed: {
+        color: 'red'
     }
-}
+
+};
+
 const mapStateToProps = ({shipmentDetails}) => {
 
 
-    const {shipmentWeight, shipmentInventorySku, shipmentInventoryCode, error, inventoryCode, inventorySku} = shipmentDetails;
-    console.log("SKU", shipmentInventorySku, "CODE", shipmentInventoryCode, "WEIGHT", shipmentWeight);
+    const {shipmentWeight, shipmentInventorySku, shipmentInventoryCode, error, inventoryCode, inventorySku, parcelProcessed} = shipmentDetails;
 
     return {
         shipmentWeight,
@@ -189,7 +197,8 @@ const mapStateToProps = ({shipmentDetails}) => {
         shipmentInventoryCode,
         error,
         inventoryCode,
-        inventorySku
+        inventorySku,
+        parcelProcessed
     };
 };
 

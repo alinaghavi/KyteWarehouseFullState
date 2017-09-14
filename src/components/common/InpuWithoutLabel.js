@@ -1,7 +1,7 @@
 import React from 'react';
 import {TextInput, View, Text} from 'react-native';
 
-const InpuWithoutLabel = ({value, onChangeText, placeholder, secureTextEntry, keyboardType, style}) => {
+const InpuWithoutLabel = ({value, onChangeText, placeholder, secureTextEntry, keyboardType, style, textStyle}) => {
     const {inputStyle, containerStyle} = styles;
 
     return (
@@ -10,7 +10,7 @@ const InpuWithoutLabel = ({value, onChangeText, placeholder, secureTextEntry, ke
                 secureTextEntry={secureTextEntry}
                 placeholder={placeholder}
                 autoCorrect={false}
-                style={inputStyle}
+                style={[inputStyle, textStyle]}
                 value={value}
                 onChangeText={onChangeText}
                 keyboardType={keyboardType}
@@ -28,8 +28,6 @@ const styles = {
         lineHeight: 23,
         flex: 1,
         textAlign:'center',
-        borderWidth:2,
-        borderColor:'#eee',
         height:38
     },
     containerStyle: {

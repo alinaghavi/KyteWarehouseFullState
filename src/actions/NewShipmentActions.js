@@ -33,6 +33,7 @@ export const getShipmentDetails = ({shipmentNumber, apiKey}) => {
                 res.json().then(
                     (shipment) => {
                         getShipmentDetailsSucceed(dispatch, shipment, apiKey);
+                        console.log(shipment);
                     }
                 )
             }
