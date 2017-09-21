@@ -1,24 +1,33 @@
-import React, { Component } from 'react';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import ReduxThunk from 'redux-thunk';
-import reducers from './reducers';
+import React, {Component} from 'react';
+import {Provider} from 'react-redux';
 import Router from './Router';
+import Store from './Store';
+import { AsyncStorage } from 'react-native';
+import { persistStore } from 'redux-persist';
+
 
 class App extends Component {
-  componentWillMount() {
 
-  }
 
-  render() {
-    const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
+    componentDidMount() {
+        persistStore(Store, {
+            storage: AsyncStorage,
+        })
+    }
 
-    return (
-      <Provider store={store}>
-        <Router />
-      </Provider>
-    );
-  }
+
+
+    componentWillMount() {
+
+    }
+
+    render() {
+        return (
+            <Provider store={Store}>
+                <Router />
+            </Provider>
+        );
+    }
 }
 
 export default App;
