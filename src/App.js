@@ -10,9 +10,9 @@ class App extends Component {
 
 
     componentDidMount() {
-        persistStore(Store, {
-            storage: AsyncStorage,
-        })
+        // persistStore(Store, {
+        //     storage: AsyncStorage,
+        // })
     }
 
 

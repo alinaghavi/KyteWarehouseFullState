@@ -11,7 +11,6 @@ class LoginForm extends Component {
 
     onButtonPress() {
         const { apiKey } = this.props;
-
         this.props.loginUser({apiKey});
     }
 
@@ -63,7 +62,6 @@ const styles = {
 
 const mapStateToProps = ({auth}) => {
     const {apiKey, error, loading} = auth;
-
     return {apiKey, error, loading};
 };
 
